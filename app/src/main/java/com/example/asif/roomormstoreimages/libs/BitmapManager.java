@@ -45,4 +45,16 @@ public class BitmapManager {
         String base64 = Base64.encodeToString(byteArray, Base64.DEFAULT);
         return base64;
     }
+
+    public static Bitmap byteToBitmap(byte[] bytes){
+        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+        return bitmap;
+    }
+
+    public static byte[] bitmapToByte(Bitmap bitmap){
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+        byte[] bytes = byteArrayOutputStream .toByteArray();
+        return bytes;
+    }
 }

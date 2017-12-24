@@ -2,6 +2,7 @@ package com.example.asif.roomormstoreimages.adapter;
 
 import android.arch.persistence.room.Room;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,8 +47,9 @@ public class MyImageAdapter extends RecyclerView.Adapter<MyImageAdapter.ViewHold
         MyImage current=images.get(position);
         holder.tvTitle.setText(current.getTitle());
 
-        String base64Image = current.getPhoto();
-        holder.ivPhoto.setImageBitmap(BitmapManager.base64ToBitmap(base64Image));
+        Bitmap photo=BitmapManager.base64ToBitmap(current.getPhoto());
+        Bitmap image=BitmapManager.byteToBitmap(current.getImage());
+        holder.ivPhoto.setImageBitmap(image);
 
     }
 

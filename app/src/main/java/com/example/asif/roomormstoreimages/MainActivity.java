@@ -77,7 +77,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void insertImages(){
         String title=etTitle.getText().toString();
         String photo= BitmapManager.bitmapToBase64(bitmap);
-        db.myImageDao().insertAll(new MyImage(title,photo));
+        byte[] image=BitmapManager.bitmapToByte(bitmap);
+        db.myImageDao().insertAll(new MyImage(title,photo,image));
         Toast.makeText(getApplicationContext(),"Image Saved",Toast.LENGTH_SHORT).show();
         etTitle.setText("");
         ivPhoto.setImageResource(R.drawable.ic_camera_alt_black_24dp);
@@ -91,7 +92,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         bitmap=(Bitmap)data.getExtras().get("data");
 //        bitmap=BitmapManager.drawString(bitmap,"Hi,\nI am Asif Mohammad Mollah,\nHow are you ?",0,0,10);
         ivPhoto.setImageBitmap(bitmap);
-        int lastUID=db.myImageDao().last().getUid();
+        int lastUID=0;
+        try{
+            lastUID=db.myImageDao().last().getUid();
+        }catch (Exception e){}
         String title="Image "+String.valueOf(lastUID+1);
         etTitle.setText(title);
         btnAddPhoto.setEnabled(true);
