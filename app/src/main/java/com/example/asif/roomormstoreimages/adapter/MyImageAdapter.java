@@ -3,11 +3,12 @@ package com.example.asif.roomormstoreimages.adapter;
 import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -62,7 +63,7 @@ public class MyImageAdapter extends RecyclerView.Adapter<MyImageAdapter.ViewHold
 
         ImageView ivPhoto;
         TextView tvTitle;
-        Button btnDelete;
+        ImageButton btnDelete;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -70,17 +71,39 @@ public class MyImageAdapter extends RecyclerView.Adapter<MyImageAdapter.ViewHold
             tvTitle=itemView.findViewById(R.id.tvTitle);
             btnDelete=itemView.findViewById(R.id.btnDelete);
             btnDelete.setOnClickListener(this);
+            ivPhoto.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View view) {
-            db= Room.databaseBuilder(ctx, AppDatabase.class, AppConfig.DB_NAME)
-                    .allowMainThreadQueries()
-                    .build();
-            MyImage image=images.get(getPosition());
-            db.myImageDao().delete(image);
-            images.remove(getPosition());
-            notifyItemRemoved(getPosition());
+            switch (view.getId()){
+                case R.id.btnDelete: {
+                    db= Room.databaseBuilder(ctx, AppDatabase.class, AppConfig.DB_NAME)
+                            .allowMainThreadQueries()
+                            .build();
+                    MyImage image=images.get(getPosition());
+                    db.myImageDao().delete(image);
+                    images.remove(getPosition());
+                    notifyItemRemoved(getPosition());
+                } break;
+                case R.id.ivPhoto: {
+                    showDetails(images.get(getPosition()),ctx);
+                } break;
+            }
+
         }
     }
+
+    private void showDetails(MyImage myImage, Context ctx) {
+        BottomSheetDialog dialog=new BottomSheetDialog(ctx);
+        dialog.setTitle(myImage.getTitle());
+        dialog.setContentView(R.layout.item_details);
+        TextView tvTitle=dialog.findViewById(R.id.tvTitle);
+        ImageView ivPhoto=dialog.findViewById(R.id.ivPhoto);
+        tvTitle.setText(myImage.getTitle());
+        ivPhoto.setImageBitmap(BitmapManager.byteToBitmap(myImage.getImage()));
+        dialog.show();
+    }
+
+
 }
